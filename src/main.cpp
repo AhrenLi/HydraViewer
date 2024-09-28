@@ -1,13 +1,16 @@
 #include <iostream>
 
-#include "viewer/hv.h"
-#include "viewer/utils/logger.h"
-
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include "viewer/hv.h"
+#include "viewer/utils/logger.h"
+#include "viewer/layout/layout.h"
+#include "viewer/windows/mainWindow.h"
 
 HV_NS_USING
 
@@ -62,6 +65,16 @@ void TerminateGLFW(GLFWwindow* window)
 	glfwTerminate();
 }
 
+bool InitGlew() {
+	glewExperimental = GL_TRUE;
+	if (glewInit() != GLEW_OK) {
+		LOG_ERROR("Failed to init glew!");
+		return false;
+	}
+
+	return true;
+}
+
 bool InitImGui(GLFWwindow* window) {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -82,6 +95,7 @@ bool InitImGui(GLFWwindow* window) {
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 
 	// layout
+	LoadLayout();
 
 	return true;
 }
@@ -92,17 +106,23 @@ void TerminateImGui() {
 	ImGui::DestroyContext();
 }
 
-int main() {
+int main(int argc, char** argv) {
 	// initialize logger
 	Logger logger;
 
 	// init glfw window
 	auto* window = InitGLFWindow(WINDOW_TITLE);
 
-	// init imgui 
-	if (!window || !InitImGui(window)) return 1;
+	// init glew and imgui
+	if (!window || !InitGlew() || !InitImGui(window)) {
+		LOG_ERROR("Failed to initialize!");
+		return -1;
+	}
 
 	glEnable(GL_DEPTH_TEST);
+
+	// main window
+	MainWindow mainWindow;
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -113,6 +133,7 @@ int main() {
 		ImGui::NewFrame();
 
 		// render content
+		mainWindow.Update();
 
 		ImGui::Render();
 
