@@ -1,4 +1,3 @@
-#include "logger.h"
 //
 //  Create by AhrenLi (https://github.com/AhrenLi) on 2024/09/28.
 //

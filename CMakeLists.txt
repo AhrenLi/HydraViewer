@@ -43,6 +43,9 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE
         ${PXR_LIBRARIES}
         spdlog::spdlog
+        libglew_static
+        glfw
+        imgui
 )
 
 if(WIN32)
