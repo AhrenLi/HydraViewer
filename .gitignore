@@ -1,0 +1,33 @@
+.vscode
+.idea
+.vs
+.DS_Store
+*cmake-build*
+build
+out
+
+# Library
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared Object(inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
