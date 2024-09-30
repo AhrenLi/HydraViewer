@@ -1,19 +1,21 @@
 //
-//  Create by AhrenLi (https://github.com/AhrenLi) on $YEAR$/$MONTH$/$DAY$.
+//  Create by AhrenLi (https://github.com/AhrenLi) on 2024/09/28.
 //
 
 #include "mainWindow.h"
 #include "../utils/logger.h"
 
 #include <imgui.h>
+#include <ImGuiFileDialog.h>
 
 #ifdef WIN32
 #include <windows.h>
 #endif
-
 #include <stdlib.h> 
 
 HV_NS_OPEN
+
+static inline constexpr auto LoadUsdFile = "LoadUsdFile";
 
 MainWindow::MainWindow() {
 
@@ -24,16 +26,21 @@ MainWindow::~MainWindow() {
 
 void MainWindow::Update() {
 	_DrawMenuBar();
+	_DrawLoadUsdFile();
 	_DrawAboutDialog();
-
 }
 
 void MainWindow::_DrawMenuBar() {
 	if (ImGui::BeginMainMenuBar()) {
 		// File
 		if (ImGui::BeginMenu("File")) {
-			ImGui::MenuItem("Open");
-
+			if (ImGui::MenuItem("Open")) {
+				IGFD::FileDialogConfig config;
+				config.path = ".";
+				config.countSelectionMax = 1;
+				config.flags = ImGuiFileDialogFlags_Modal;
+				ImGuiFileDialog::Instance()->OpenDialog(LoadUsdFile, "Choose File", ".usd,.usdc,.usda,.usdz", config);
+			}
 			ImGui::EndMenu();
 		}
 		// About
@@ -47,6 +54,16 @@ void MainWindow::_DrawMenuBar() {
 	}
 }
 
+void MainWindow::_DrawLoadUsdFile() {
+	if (ImGuiFileDialog::Instance()->Display(LoadUsdFile)) {
+		if (ImGuiFileDialog::Instance()->IsOk()) {
+			const auto filePath = ImGuiFileDialog::Instance()->GetFilePathName();
+			_LoadUsdStage(filePath);
+		}
+		ImGuiFileDialog::Instance()->Close();
+	}
+}
+
 void MainWindow::_DrawAboutDialog() {
 	if (mShowAbout) {
 		ImGui::OpenPopup("About Dialog");
@@ -54,9 +71,6 @@ void MainWindow::_DrawAboutDialog() {
 	}
 
 	if (ImGui::BeginPopup("About Dialog", ImGuiWindowFlags_AlwaysAutoResize)) {
-
-		LOG_INFO("Show About Dialog");
-
 		ImGui::Text("Copyright©2024 AhrenLi");
 		ImGui::Text("Github:");
 		ImGui::SameLine();
@@ -71,6 +85,7 @@ void MainWindow::_DrawAboutDialog() {
 #endif
 		}
 
+		ImGui::Spacing();
 		ImGui::Separator();
 
 		if (ImGui::Button("Sure")) {
@@ -78,9 +93,11 @@ void MainWindow::_DrawAboutDialog() {
 		}
 
 		ImGui::EndPopup();
+		}
 	}
 
+void MainWindow::_LoadUsdStage(const std::string& filePath) {
+	LOG_ERROR("Todo: load usd stage at {}", filePath);
 }
-
 
 HV_NS_CLOSE

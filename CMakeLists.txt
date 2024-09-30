@@ -46,6 +46,8 @@ target_link_libraries(${PROJECT_NAME}
         libglew_static
         glfw
         imgui
+        imguizmo
+        imguifiledialog
 )
 
 if(WIN32)

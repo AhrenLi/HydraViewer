@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "../hv.h"
 
 HV_NS_OPEN
@@ -21,8 +23,10 @@ public:
 private:
 
 	void _DrawMenuBar();
+	void _DrawLoadUsdFile();
 	void _DrawAboutDialog();
 
+	void _LoadUsdStage(const std::string& filePath);
 
 	bool mShowAbout{ false };
 };
